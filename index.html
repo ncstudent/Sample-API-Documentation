@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sample API Documentation (sample)</title>
+<style>
+:root{--bg:#fff;--panel:#F4F5F7;--text:#172B4D;--sub:#5E6C84;--line:#DFE1E6;--blue:#0052CC;--blue-bg:#DEEBFF;--code:#F4F5F7;--nav:#0747A6;--red:#8B0000;
+--get:#E3FCEF;--getc:#006644;--post:#DEEBFF;--postc:#0747A6;--patch:#FFF0B3;--patchc:#7A5B00;--del:#FFEBE6;--delc:#BF2600;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1D2125;--panel:#22272B;--text:#B6C2CF;--sub:#8C9BAB;--line:#38414A;--blue:#579DFF;--blue-bg:#09326C;--code:#161A1D;--nav:#09326C;
+--get:#1C3329;--getc:#4BCE97;--post:#09326C;--postc:#85B8FF;--patch:#3D3A1A;--patchc:#F5CD47;--del:#42221F;--delc:#FD9891}}
+:root[data-theme="dark"]{--bg:#1D2125;--panel:#22272B;--text:#B6C2CF;--sub:#8C9BAB;--line:#38414A;--blue:#579DFF;--blue-bg:#09326C;--code:#161A1D;--nav:#09326C;
+--get:#1C3329;--getc:#4BCE97;--post:#09326C;--postc:#85B8FF;--patch:#3D3A1A;--patchc:#F5CD47;--del:#42221F;--delc:#FD9891}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 -apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+header{background:var(--nav);color:#fff;height:48px;display:flex;align-items:center;padding:0 16px;gap:14px;font-weight:600}
+header .logo{width:22px;height:22px;background:#fff;border-radius:4px;display:inline-block;position:relative}
+header .logo:after{content:"";position:absolute;inset:5px;background:var(--nav);border-radius:2px}
+header span.s{font-weight:400;opacity:.85}
+.wrap{display:flex;min-height:calc(100vh - 48px)}
+nav{width:270px;flex:none;background:var(--panel);border-right:1px solid var(--line);padding:16px 8px}
+nav h4{margin:0 8px 2px;font-size:15px}
+nav small{display:block;margin:0 8px 14px;color:var(--sub)}
+nav .grp{margin:14px 8px 4px;font-size:11px;font-weight:700;color:var(--sub)}
+nav button{display:block;width:100%;text-align:left;background:none;border:0;border-left:3px solid transparent;color:var(--text);font:inherit;padding:7px 10px;border-radius:3px;cursor:pointer}
+nav button:hover{background:rgba(9,30,66,.08)}
+nav button[aria-selected=true]{background:var(--blue-bg);border-left-color:var(--blue);color:var(--blue);font-weight:600}
+button:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+main{flex:1;min-width:0;padding:28px 48px 64px;max-width:960px}
+.crumb{color:var(--sub);font-size:12px;margin-bottom:6px}
+h1{font-size:28px;line-height:1.25;margin:0 0 4px;font-weight:600}
+.meta{color:var(--sub);font-size:12px;margin-bottom:22px;display:flex;gap:10px;align-items:center}
+.av{width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;display:inline-flex;align-items:center;justify-content:center}
+.av2{width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;display:inline-flex;align-items:center;justify-content:center}
+h2{font-size:20px;margin:30px 0 8px;font-weight:600;border-bottom:1px solid var(--line);padding-bottom:4px}
+h3{font-size:16px;margin:22px 0 6px}
+p,li{max-width:74ch}
+code{background:var(--code);padding:1px 5px;border-radius:3px;font:12.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{background:var(--code);border:1px solid var(--line);border-radius:3px;padding:12px 14px;overflow-x:auto;margin:10px 0 16px;position:relative}
+pre code{display:block;padding:0 70px 0 0;background:none;font-size:12.5px;line-height:1.55}
+pre .copy-code{position:absolute;top:7px;right:7px;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:3px;padding:3px 8px;font:inherit;font-size:11px;cursor:pointer;opacity:.85}
+pre .copy-code:hover{opacity:1}
+pre .copy-code:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.fn{font:11px ui-monospace,Menlo,Consolas,monospace;color:var(--sub);margin:12px 0 -6px}
+.panel{border-radius:3px;padding:10px 14px 10px 14px;margin:14px 0;border-left:4px solid var(--blue);background:var(--blue-bg);max-width:74ch}
+.panel.warn{border-color:#FF991F;background:var(--patch);color:var(--text)}
+.panel b:first-child{display:block}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;margin:10px 0 18px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600}
+.l{display:inline-block;font-size:11px;font-weight:700;padding:1px 6px;border-radius:3px;min-width:52px;text-align:center}
+.GET{background:var(--get);color:var(--getc)}.POST{background:var(--post);color:var(--postc)}
+.PATCH{background:var(--patch);color:var(--patchc)}.DELETE{background:var(--del);color:var(--delc)}
+.src{float:right;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:3px;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}
+.md h2{margin-top:26px}.md ul{padding-left:22px}
+.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:3px;margin-right:6px}
+section[hidden]{display:none}
+@media (max-width:760px){.wrap{flex-direction:column}nav{width:100%;border-right:0;border-bottom:1px solid var(--line)}main{padding:20px 16px 48px}}
+</style>
+</head>
+<body>
+<header><span class="logo"></span>Docs <span class="s">/ Catalog API</span></header>
+<div class="wrap">
+<nav role="tablist" aria-label="Pages">
+<h4>Sample Catalog API</h4><small>A mockup API loosely based off an internal Catalog service.</small>
+<div class="grp">GUIDES</div>
+<button role="tab" data-t="db" aria-selected="true">Data layer: Node.js + MongoDB</button>
+<button role="tab" data-t="api" aria-selected="false">Routing &amp; Local Testing</button>
+<div class="grp">REFERENCE</div>
+<button role="tab" data-t="log" aria-selected="false">Changelog</button>
+<div class="grp">TUTORIALS</div>
+<button role="tab" data-t="py" aria-selected="false">Adding a new field</button>
+</nav>
+<main>
+
+<section id="db">
+<div class="crumb">Catalog API / Guides</div>
+<h1>Data layer: Node.js + MongoDB</h1>
+<div class="meta"><span class="av">CE</span>Company Employee &nbsp;Version 1.03</div>
+<p>The Catalog API stores intellectual property records and training materials as MongoDB documents. This guide covers the document structure, route behavior, and local testing workflow.</p>
+<div class="panel"><b>Minimum Requirements</b>Node.js 18 with MongoDB 7.0 reachable at <code>MONGO_URI</code> (default <code>mongodb://localhost:27017</code>).</div>
+
+<h2>Document structure</h2>
+<div class="tbl"><table>
+<tr><th>Field</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>catalogId</code></td><td>string</td><td>Indexed Unique identifier (e.g. <code>CAT-0042</code>).</td></tr>
+<tr><td><code>title</code></td><td>string</td><td>Display name of the item.</td></tr>
+<tr><td><code>type</code></td><td>string</td><td><code>ip</code> or <code>training</code>.</td></tr>
+<tr><td><code>owner</code></td><td>string</td><td>Team or person responsible for the item.</td></tr>
+<tr><td><code>description</code></td><td>string</td><td>Optional summary.</td></tr>
+<tr><td><code>tags</code></td><td>array of strings</td><td>Optional search labels.</td></tr>
+<tr><td><code>createdAt</code></td><td>Date</td><td>Set by the server on insert.</td></tr>
+<tr><td><code>updatedAt</code></td><td>Date</td><td>Set by the server on every update.</td></tr>
+</table></div>
+
+<h2>Connect</h2>
+<div class="fn">db.js</div>
+<pre><code>const { MongoClient } = require('mongodb');
+
+const client = new MongoClient(process.env.MONGO_URI || 'mongodb://localhost:27017');
+let items;
+
+async function connect() {
+  await client.connect();
+  items = client.db('Catalog').collection('items');
+  await items.createIndex({ catalogId: 1 }, { unique: true });
+  return items;
+}
+
+module.exports = { connect, collection: () =&gt; items };</code></pre>
+<div class="panel warn"><b>Create only one Connection</b>Call <code>connect()</code> at startup. The driver manages a connection pool, so as not to create a new client per request.</div>
+
+<h2>Create an item</h2>
+<pre><code>async function createItem({ title, type, owner, description = '', tags = [] }) {
+  const now = new Date();
+  const catalogId = 'CAT-' + String(await items.countDocuments() + 1).padStart(4, '0');
+  const doc = { catalogId, title, type, owner, description, tags, createdAt: now, updatedAt: now };
+  await items.insertOne(doc);
+  return doc;
+}</code></pre>
+<p>If <code>catalogId</code> collides with an existing document, MongoDB throws error code <code>11000</code> and the route returns <code>409</code>.</p>
+
+<h2>List items</h2>
+<pre><code>async function listItems({ type, page = 1, limit = 20 }) {
+  const filter = type ? { type } : {};
+  const [results, total] = await Promise.all([
+    items.find(filter).sort({ createdAt: -1 })
+      .skip((page - 1) * limit).limit(limit).toArray(),
+    items.countDocuments(filter),
+  ]);
+  return { results, page, limit, total };
+}</code></pre>
+
+<h2>Replace an item</h2>
+<pre><code>async function replaceItem(catalogId, { title, type, owner, description = '', tags = [] }) {
+  return items.findOneAndReplace(
+    { catalogId },
+    { catalogId, title, type, owner, description, tags, updatedAt: new Date() },
+    { returnDocument: 'after' }
+  ); // null when no document matches; the route returns 404
+}</code></pre>
+
+<h2>Delete an item</h2>
+<pre><code>async function deleteItem(catalogId) {
+  const { deletedCount } = await items.deleteOne({ catalogId });
+  return deletedCount === 1;
+}</code></pre>
+</section>
+
+<section id="api" hidden>
+<div class="crumb">Catalog API / Guides</div>
+<h1>Routing &amp; Local Testing</h1>
+<div class="meta"><span class="av">CE</span>Company Employee &nbsp;Version 1.03</div>
+<p>All routes are served under <code>/api/v1</code> require a bearer token and return JSON.</p>
+
+<h2>Endpoints</h2>
+<div class="tbl"><table>
+<tr><th>Method</th><th>Path</th><th>Purpose</th></tr>
+<tr><td><span class="l POST">POST</span></td><td><code>/items</code></td><td>Creates a Catalog item and assigns a unique <code>catalogId</code>.</td></tr>
+<tr><td><span class="l GET">GET</span></td><td><code>/items</code></td><td>Returns items with optional <code>type</code> filtering and page-based pagination.</td></tr>
+<tr><td><span class="l GET">GET</span></td><td><code>/items/:catalogId</code></td><td>Returns a single item identified by <code>catalogId</code>, or <code>404</code> when none exists.</td></tr>
+<tr><td><span class="l PUT">PUT</span></td><td><code>/items/:catalogId</code></td><td>Replaces an existing item; the required fields must be supplied because the document is replaced rather than merged.</td></tr>
+<tr><td><span class="l DELETE">DELETE</span></td><td><code>/items/:catalogId</code></td><td>Deletes the matching item and reports whether a document was removed.</td></tr>
+</table></div>
+
+<div class="panel"><b>POST details</b>See <a href=".">Intellectual Property</a> & <a href=".">Learning Materials</a> for POST fields.</div>
+
+
+
+<h2>Run locally</h2>
+<pre><code>git clone [repo-url]
+cd Catalog-api
+npm install
+MONGO_URI=mongodb://localhost:27017 API_TOKEN=dev-token npm start
+# Listening on http://localhost:3000</code></pre>
+
+<h2>Call the API from Postman</h2>
+<ol>
+<li>Import <code>Catalog.postman_collection.json</code> from the <code>/docs</code> folder.</li>
+<li>Create an environment with <code>baseUrl</code> set to <code>http://localhost:3000/api/v1</code> and <code>token</code> set to <code>dev-token</code>.</li>
+<li>In the collection settings, set Authorization to Bearer Token with the value <code>{{token}}</code>.</li>
+</ol>
+
+<div class="panel warn"><b>Accessing for the first time</b>Be sure to run the <code>AuthInit.sh</code> for default key & token data. Otherwise you must manually <code>Post</code> the Bearer token credentials. </div>
+
+
+<p>Example request:</p>
+<pre><code>POST {{baseUrl}}/items
+Content-Type: application/json
+
+{
+  "title": "04/17 Sales CRM Onboarding Workshop Slides",
+  "type": "training",
+  "owner": "Learning and Development",
+  "tags": ["onboarding", "slides"]
+}</code></pre>
+<p>Response, <code>201 Created</code>:</p>
+<pre><code>{
+  "catalogId": "CAT-0042",
+  "title": "04/17 Sales CRM Onboarding Workshop Slides",
+  "type": "training",
+  "owner": "Learning and Development",
+  "description": "",
+  "tags": ["onboarding", "slides"],
+  "createdAt": "2025-03-04T14:22:10.000Z",
+  "updatedAt": "2025-03-04T14:22:10.000Z"
+}</code></pre>
+
+<h2>Errors</h2>
+<div class="tbl"><table>
+<tr><th>Status</th><th>error</th><th>Resolution</th></tr>
+<tr><td>400</td><td><code>invalid_parameters</code></td><td>Check that <code>title</code>, <code>type</code>, and <code>owner</code> are present and that <code>type</code> is <code>ip</code> or <code>training</code>.</td></tr>
+<tr><td>401</td><td><code>unauthorized</code></td><td>Check the <code>Authorization</code> header and token value.</td></tr>
+<tr><td>404</td><td><code>not_found</code></td><td>No item exists with that <code>catalogId</code>.</td></tr>
+<tr><td>409</td><td><code>duplicate_catalog_id</code></td><td>An item with that identifier already exists. Retry the request.</td></tr>
+</table></div>
+</section>
+
+<section id="log" hidden>
+<div class="crumb">Catalog API / Reference</div>
+<h1>Changelog</h1>
+<div class="meta"><span class="av2">MB</span>MD Bot &nbsp; v1.3.0
+<button class="src" id="srcbtn" style="margin-left:auto">View Markdown source</button></div>
+<div class="md" id="mdout"></div>
+<pre id="mdsrc" hidden><code></code></pre>
+</section>
+
+<section id="py" hidden>
+<div class="crumb">Catalog API / Tutorials</div>
+<h1>Adding a New Field</h1>
+<div class="meta"><span class="av">TW</span>Technical Writer &nbsp; Updated 09.22</div>
+<p>Sometimes old documents come alive. An identity might split into two, new information might emerge, or a record’s circumstances might simply change.
+
+This tutorial will walk you through how to add a new field to the Catalog API so your records can keep up with those changes.
+
+<br/><br/>
+Let’s start with a simple one: a document's <code>status</code>. Take caution. Even a single "simple" field propogates changes everywhere - from MongoDB documents, request validators, create and replace operators, to this very documentation.</p>
+
+<h2>1. Define the allowed values</h2>
+<p>The API accepts three statuses: <code>draft</code>, <code>active</code>, and <code>archived</code>. Keep the allowed values in one place so the route and data layer use the same definition.</p>
+<pre><code>const allowedStatuses = ['draft', 'active', 'archived'];</code></pre>
+
+<h2>2. Update the create operation</h2>
+<p>Add <code>status</code> to the function parameters and store it on the document. New items default to <code>draft</code> when the caller does not supply a value. <br/></p>
+<pre><code>async function createItem({
+  title,
+  type,
+  owner,
+  description = '',
+  tags = [],
+  status = 'draft'
+}) {
+  const now = new Date();
+  const catalogId = 'CAT-' + String(await items.countDocuments() + 1).padStart(4, '0');
+  const doc = {
+    catalogId, title, type, owner, description, tags, status,
+    createdAt: now,
+    updatedAt: now
+  };
+  await items.insertOne(doc);
+  return doc;
+}</code></pre>
+
+<h2>3. Validate requests</h2>
+<p>The router should reject an unknown status before the request reaches the database. When the field is omitted, use <code>draft</code> as the default.</p>
+<div class="fn">routes/items.js</div>
+<pre><code>const { title, type, owner, status = 'draft' } = req.body;
+
+if (!title || !owner || !['ip', 'training'].includes(type) ||
+    !allowedStatuses.includes(status)) {
+  return res.status(400).json({ error: 'invalid_parameters' });
+}</code></pre>
+<div class="panel"><b>Why validate here?</b>Rejecting an invalid value at the API boundary gives callers a predictable <code>400</code> response and prevents invalid documents from reaching the database.</div>
+
+<h2>4. Update replacements</h2>
+<p>Because <code>PUT /items/:catalogId</code> replaces the document, it must include <code>status</code> in the replacement object. Otherwise an existing status would be dropped.</p>
+<pre><code>async function replaceItem(catalogId, {
+  title,
+  type,
+  owner,
+  description = '',
+  tags = [],
+  status = 'draft'
+}) {
+  return items.findOneAndReplace(
+    { catalogId },
+    { catalogId, title, type, owner, description, tags, status,
+      updatedAt: new Date() },
+    { returnDocument: 'after' }
+  );
+}</code></pre>
+
+<h2>5. Test the new behavior</h2>
+<p>Test both the default and the validation rule. The first request should store <code>draft</code>; the second should return <code>400</code>.</p>
+<pre><code>it('defaults a new item to draft', async () =&gt; {
+  const response = await request(app)
+    .post('/api/v1/items')
+    .send({ title: 'Example', type: 'training', owner: 'L&amp;D' });
+
+  expect(response.status).toBe(201);
+  expect(response.body.status).toBe('draft');
+});
+
+it('rejects an invalid status', async () =&gt; {
+  const response = await request(app)
+    .post('/api/v1/items')
+    .send({
+      title: 'Example',
+      type: 'training',
+      owner: 'L&amp;D',
+      status: 'pending'
+    });
+
+  expect(response.status).toBe(400);
+});</code></pre>
+
+<h2>6. Update the API reference</h2>
+<p>Add <code>status</code> to the request table and document the accepted values and default.</p>
+<div class="tbl"><table>
+<tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+<tr><td><code>status</code></td><td>string</td><td>No</td><td>Either <code>draft</code>, <code>active</code>, or <code>archived</code>. Defaults to <code>draft</code>.</td></tr>
+</table></div>
+
+<h2>End Result</h2>
+<p>All newly created items now have an explicit lifecycle:</p>
+<pre><code>{
+  "catalogId": "CAT-0042",
+  "title": "Onboarding Workshop Slides",
+  "type": "training",
+  "owner": "Learning and Development",
+  "status": "draft"
+}</code></pre>
+<p>And that’s all there is to it. With status now carried through the API, clients can rely on the same information wherever - <i> and whenever </i> - the record is read or updated.</p>
+
+<div class="md" id="pyout"></div>
+</section>
+
+</main>
+</div>
+<script>
+const changelog = `## 1.3.0 - 2025-03-04
+- **Added** \`status\` filter and \`page\`/\`limit\` pagination on \`GET /shipments\`.
+- **Added** \`updatedAt\` field, set on every status change.
+- **Changed** duplicate tracking codes now return \`409\` instead of \`500\`.
+
+## 1.2.0 - 2025-01-20
+- **Added** \`DELETE /shipments/:code\`.
+- **Deprecated** \`GET /shipments/all\`. Use \`GET /shipments\` instead. Removal planned for 2.0.0.
+
+## 1.1.1 - 2024-12-09
+- **Fixed** \`PATCH\` returning the document before the update. It now returns the updated document.
+
+## 1.0.0 - 2024-11-12
+- Initial release: create, list, and fetch shipments with bearer-token auth.`;
+
+
+function inline(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')
+ .replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');}
+function md(src){
+  let out='',list=false,fence=false;
+  for(const line of src.split('\n')){
+    if(line.startsWith('```')){out+=fence?'</code></pre>':'<pre><code>';fence=!fence;continue}
+    if(fence){out+=line.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'\n';continue}
+    const li=line.match(/^[-*] (.*)/);
+    if(li){if(!list){out+='<ul>';list=true}out+='<li>'+inline(li[1])+'</li>';continue}
+    if(list){out+='</ul>';list=false}
+    const h=line.match(/^(#{1,3}) (.*)/);
+    if(h){const n=Math.max(2,h[1].length);out+=`<h${n}>${inline(h[2])}</h${n}>`}
+    else if(line.trim()){out+='<p>'+inline(line)+'</p>'}
+  }
+  return out+(list?'</ul>':'');
+}
+document.getElementById('mdout').innerHTML=md(changelog);
+document.querySelector('#mdsrc code').textContent=changelog;
+document.getElementById('srcbtn').onclick=e=>{
+  const s=document.getElementById('mdsrc'),o=document.getElementById('mdout');
+  s.hidden=!s.hidden;o.hidden=!s.hidden;
+  e.target.textContent=s.hidden?'View Markdown source':'View rendered page';
+};
+function addCopyButtons(){
+  document.querySelectorAll('pre').forEach(pre=>{
+    if(pre.querySelector('.copy-code')) return;
+    const button=document.createElement('button');
+    button.className='copy-code';
+    button.type='button';
+    button.textContent='Copy';
+    button.setAttribute('aria-label','Copy code');
+    button.onclick=async ()=>{
+      const code=pre.querySelector('code');
+      try{
+        await navigator.clipboard.writeText(code.textContent);
+        button.textContent='Copied';
+        setTimeout(()=>button.textContent='Copy',1200);
+      }catch{
+        button.textContent='Failed';
+        setTimeout(()=>button.textContent='Copy',1200);
+      }
+    };
+    pre.appendChild(button);
+  });
+}
+
+addCopyButtons();
+
+const tabs=[...document.querySelectorAll('nav button')];
+function show(id){
+  tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.t===id));
+  document.querySelectorAll('main section').forEach(s=>s.hidden=s.id!==id);
+  window.scrollTo(0,0);
+}
+tabs.forEach(b=>b.onclick=()=>show(b.dataset.t));
+</script>
+</body>
+</html>
