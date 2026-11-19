@@ -3,20 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sample API Documentation (sample)</title>
+<meta name="description" content="Developer documentation for the Sample Catalog demonstration REST API.">
+<title>Sample Catalog API Documentation</title>
 <style>
-:root{--bg:#fff;--panel:#F4F5F7;--text:#172B4D;--sub:#5E6C84;--line:#DFE1E6;--blue:#0052CC;--blue-bg:#DEEBFF;--code:#F4F5F7;--nav:#0747A6;--red:#8B0000;
---get:#E3FCEF;--getc:#006644;--post:#DEEBFF;--postc:#0747A6;--patch:#FFF0B3;--patchc:#7A5B00;--del:#FFEBE6;--delc:#BF2600;
+:root{--bg:#fff;--panel:#F4F5F7;--text:#172B4D;--sub:#5E6C84;--line:#DFE1E6;--blue:#0052CC;--blue-bg:#DEEBFF;--code:#F4F5F7;--nav:#0747A6;
+--get:#E3FCEF;--getc:#006644;--post:#DEEBFF;--postc:#0747A6;--put:#FFF0B3;--putc:#7A5B00;--del:#FFEBE6;--delc:#BF2600;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1D2125;--panel:#22272B;--text:#B6C2CF;--sub:#8C9BAB;--line:#38414A;--blue:#579DFF;--blue-bg:#09326C;--code:#161A1D;--nav:#09326C;
---get:#1C3329;--getc:#4BCE97;--post:#09326C;--postc:#85B8FF;--patch:#3D3A1A;--patchc:#F5CD47;--del:#42221F;--delc:#FD9891}}
+--get:#1C3329;--getc:#4BCE97;--post:#09326C;--postc:#85B8FF;--put:#3D3A1A;--putc:#F5CD47;--del:#42221F;--delc:#FD9891}}
 :root[data-theme="dark"]{--bg:#1D2125;--panel:#22272B;--text:#B6C2CF;--sub:#8C9BAB;--line:#38414A;--blue:#579DFF;--blue-bg:#09326C;--code:#161A1D;--nav:#09326C;
---get:#1C3329;--getc:#4BCE97;--post:#09326C;--postc:#85B8FF;--patch:#3D3A1A;--patchc:#F5CD47;--del:#42221F;--delc:#FD9891}
+--get:#1C3329;--getc:#4BCE97;--post:#09326C;--postc:#85B8FF;--put:#3D3A1A;--putc:#F5CD47;--del:#42221F;--delc:#FD9891}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 -apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
-header{background:var(--nav);color:#fff;height:48px;display:flex;align-items:center;padding:0 16px;gap:14px;font-weight:600}
-header .logo{width:22px;height:22px;background:#fff;border-radius:4px;display:inline-block;position:relative}
+header{background:var(--nav);color:#fff;min-height:48px;display:flex;align-items:center;padding:0 16px;gap:14px;font-weight:600}
+header .logo{width:22px;height:22px;background:#fff;border-radius:4px;display:inline-block;position:relative;flex:none}
 header .logo:after{content:"";position:absolute;inset:5px;background:var(--nav);border-radius:2px}
 header span.s{font-weight:400;opacity:.85}
 .wrap{display:flex;min-height:calc(100vh - 48px)}
@@ -27,224 +28,217 @@ nav .grp{margin:14px 8px 4px;font-size:11px;font-weight:700;color:var(--sub)}
 nav button{display:block;width:100%;text-align:left;background:none;border:0;border-left:3px solid transparent;color:var(--text);font:inherit;padding:7px 10px;border-radius:3px;cursor:pointer}
 nav button:hover{background:rgba(9,30,66,.08)}
 nav button[aria-selected=true]{background:var(--blue-bg);border-left-color:var(--blue);color:var(--blue);font-weight:600}
-button:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
-main{flex:1;min-width:0;padding:28px 48px 64px;max-width:960px}
+button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+main{flex:1;min-width:0;padding:28px 48px 64px;max-width:1180px}
 .crumb{color:var(--sub);font-size:12px;margin-bottom:6px}
 h1{font-size:28px;line-height:1.25;margin:0 0 4px;font-weight:600}
-.meta{color:var(--sub);font-size:12px;margin-bottom:22px;display:flex;gap:10px;align-items:center}
-.av{width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;display:inline-flex;align-items:center;justify-content:center}
-.av2{width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;display:inline-flex;align-items:center;justify-content:center}
+.meta{color:var(--sub);font-size:12px;margin-bottom:22px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 h2{font-size:20px;margin:30px 0 8px;font-weight:600;border-bottom:1px solid var(--line);padding-bottom:4px}
 h3{font-size:16px;margin:22px 0 6px}
-p,li{max-width:74ch}
+p,li{max-width:82ch}
+p{margin:9px 0}
+ul,ol{padding-left:24px}
 code{background:var(--code);padding:1px 5px;border-radius:3px;font:12.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 pre{background:var(--code);border:1px solid var(--line);border-radius:3px;padding:12px 14px;overflow-x:auto;margin:10px 0 16px;position:relative}
-pre code{display:block;padding:0 70px 0 0;background:none;font-size:12.5px;line-height:1.55}
+pre code{display:block;padding:0 70px 0 0;background:none;font-size:12.5px;line-height:1.55;white-space:pre}
 pre .copy-code{position:absolute;top:7px;right:7px;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:3px;padding:3px 8px;font:inherit;font-size:11px;cursor:pointer;opacity:.85}
 pre .copy-code:hover{opacity:1}
 pre .copy-code:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
 .fn{font:11px ui-monospace,Menlo,Consolas,monospace;color:var(--sub);margin:12px 0 -6px}
-.panel{border-radius:3px;padding:10px 14px 10px 14px;margin:14px 0;border-left:4px solid var(--blue);background:var(--blue-bg);max-width:74ch}
-.panel.warn{border-color:#FF991F;background:var(--patch);color:var(--text)}
-.panel b:first-child{display:block}
+.panel{border-radius:3px;padding:10px 14px;margin:14px 0;border-left:4px solid var(--blue);background:var(--blue-bg);max-width:88ch}
+.panel.warn{border-color:#FF991F;background:var(--put);color:var(--text)}
+.panel b:first-child{display:block;margin-bottom:2px}
 .tbl{overflow-x:auto}
 table{border-collapse:collapse;width:100%;margin:10px 0 18px}
 th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
 th{background:var(--panel);font-weight:600}
 .l{display:inline-block;font-size:11px;font-weight:700;padding:1px 6px;border-radius:3px;min-width:52px;text-align:center}
 .GET{background:var(--get);color:var(--getc)}.POST{background:var(--post);color:var(--postc)}
-.PATCH{background:var(--patch);color:var(--patchc)}.DELETE{background:var(--del);color:var(--delc)}
-.src{float:right;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:3px;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}
-.md h2{margin-top:26px}.md ul{padding-left:22px}
-.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:3px;margin-right:6px}
+.PUT{background:var(--put);color:var(--putc)}.DELETE{background:var(--del);color:var(--delc)}
+.src{margin-left:auto;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:3px;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}
+.md h2{font-size:18px;margin:20px 0 2px;padding-bottom:3px}.md h2:first-child{margin-top:4px}
+.md p{margin:2px 0 6px;color:var(--sub);font-size:12px}
+.md h3{font-size:13px;margin:8px 0 1px}
+.md ul{padding-left:22px;margin:2px 0 8px}.md li{margin:1px 0}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.card{border:1px solid var(--line);border-radius:4px;padding:14px;background:var(--bg)}
+.card h3{margin:0 0 5px}
+.card p{margin:0 0 8px}
+.page-link{color:var(--blue);font-weight:600;text-decoration:none}
+.page-link:hover{text-decoration:underline}
 section[hidden]{display:none}
-@media (max-width:760px){.wrap{flex-direction:column}nav{width:100%;border-right:0;border-bottom:1px solid var(--line)}main{padding:20px 16px 48px}}
+@media (max-width:900px){main{padding:24px 24px 56px}}
+@media (max-width:760px){.wrap{flex-direction:column}nav{width:100%;border-right:0;border-bottom:1px solid var(--line)}main{padding:20px 16px 48px}.cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header><span class="logo"></span>Docs <span class="s">/ Catalog API</span></header>
+<header><span class="logo" aria-hidden="true"></span>Docs <span class="s">/ Sample Catalog API</span></header>
 <div class="wrap">
-<nav role="tablist" aria-label="Pages">
-<h4>Sample Catalog API</h4><small>A mockup API loosely based off an internal Catalog service.</small>
+<nav role="tablist" aria-label="Documentation pages">
+<h4>Sample Catalog API</h4>
+<small>Demonstration REST API documentation</small>
+<div class="grp">START HERE</div>
+<button type="button" role="tab" data-t="home" aria-selected="true">Overview</button>
+<button type="button" role="tab" data-t="start" aria-selected="false">Getting started</button>
 <div class="grp">GUIDES</div>
-<button role="tab" data-t="db" aria-selected="true">Data layer: Node.js + MongoDB</button>
-<button role="tab" data-t="api" aria-selected="false">Routing &amp; Local Testing</button>
+<button type="button" role="tab" data-t="db" aria-selected="false">Data layer</button>
+<button type="button" role="tab" data-t="field" aria-selected="false">Add a status field</button>
 <div class="grp">REFERENCE</div>
-<button role="tab" data-t="log" aria-selected="false">Changelog</button>
-<div class="grp">TUTORIALS</div>
-<button role="tab" data-t="py" aria-selected="false">Adding a new field</button>
+<button type="button" role="tab" data-t="api" aria-selected="false">API reference</button>
+<button type="button" role="tab" data-t="log" aria-selected="false">Changelog</button>
 </nav>
 <main>
 
-<section id="db">
-<div class="crumb">Catalog API / Guides</div>
-<h1>Data layer: Node.js + MongoDB</h1>
-<div class="meta"><span class="av">CE</span>Company Employee &nbsp;Version 1.03</div>
-<p>The Catalog API stores intellectual property records and training materials as MongoDB documents. This guide covers the document structure, route behavior, and local testing workflow.</p>
-<div class="panel"><b>Minimum Requirements</b>Node.js 18 with MongoDB 7.0 reachable at <code>MONGO_URI</code> (default <code>mongodb://localhost:27017</code>).</div>
-
-<h2>Document structure</h2>
-<div class="tbl"><table>
-<tr><th>Field</th><th>Type</th><th>Description</th></tr>
-<tr><td><code>catalogId</code></td><td>string</td><td>Indexed Unique identifier (e.g. <code>CAT-0042</code>).</td></tr>
-<tr><td><code>title</code></td><td>string</td><td>Display name of the item.</td></tr>
-<tr><td><code>type</code></td><td>string</td><td><code>ip</code> or <code>training</code>.</td></tr>
-<tr><td><code>owner</code></td><td>string</td><td>Team or person responsible for the item.</td></tr>
-<tr><td><code>description</code></td><td>string</td><td>Optional summary.</td></tr>
-<tr><td><code>tags</code></td><td>array of strings</td><td>Optional search labels.</td></tr>
-<tr><td><code>createdAt</code></td><td>Date</td><td>Set by the server on insert.</td></tr>
-<tr><td><code>updatedAt</code></td><td>Date</td><td>Set by the server on every update.</td></tr>
-</table></div>
-
-<h2>Connect</h2>
-<div class="fn">db.js</div>
-<pre><code>const { MongoClient } = require('mongodb');
-
-const client = new MongoClient(process.env.MONGO_URI || 'mongodb://localhost:27017');
-let items;
-
-async function connect() {
-  await client.connect();
-  items = client.db('Catalog').collection('items');
-  await items.createIndex({ catalogId: 1 }, { unique: true });
-  return items;
-}
-
-module.exports = { connect, collection: () =&gt; items };</code></pre>
-<div class="panel warn"><b>Create only one Connection</b>Call <code>connect()</code> at startup. The driver manages a connection pool, so as not to create a new client per request.</div>
-
-<h2>Create an item</h2>
-<pre><code>async function createItem({ title, type, owner, description = '', tags = [] }) {
-  const now = new Date();
-  const catalogId = 'CAT-' + String(await items.countDocuments() + 1).padStart(4, '0');
-  const doc = { catalogId, title, type, owner, description, tags, createdAt: now, updatedAt: now };
-  await items.insertOne(doc);
-  return doc;
-}</code></pre>
-<p>If <code>catalogId</code> collides with an existing document, MongoDB throws error code <code>11000</code> and the route returns <code>409</code>.</p>
-
-<h2>List items</h2>
-<pre><code>async function listItems({ type, page = 1, limit = 20 }) {
-  const filter = type ? { type } : {};
-  const [results, total] = await Promise.all([
-    items.find(filter).sort({ createdAt: -1 })
-      .skip((page - 1) * limit).limit(limit).toArray(),
-    items.countDocuments(filter),
-  ]);
-  return { results, page, limit, total };
-}</code></pre>
-
-<h2>Replace an item</h2>
-<pre><code>async function replaceItem(catalogId, { title, type, owner, description = '', tags = [] }) {
-  return items.findOneAndReplace(
-    { catalogId },
-    { catalogId, title, type, owner, description, tags, updatedAt: new Date() },
-    { returnDocument: 'after' }
-  ); // null when no document matches; the route returns 404
-}</code></pre>
-
-<h2>Delete an item</h2>
-<pre><code>async function deleteItem(catalogId) {
-  const { deletedCount } = await items.deleteOne({ catalogId });
-  return deletedCount === 1;
-}</code></pre>
+<section id="home">
+<div class="crumb">Catalog API / Overview</div>
+<h1>Sample Catalog API</h1>
+<div class="meta">Version 1.3.0</div>
+<p>This is a demonstration REST API for managing intellectual-property (IP) assets and training materials. Its structure and workflows draw on systems and documentation from a previous professional role; the data and examples have been adapted for this sample.</p>
+<div class="cards">
+<div class="card"><h3>Getting started</h3><p>Set up the API, configure the database and token, and send a first request.</p><a class="page-link" href="#start" data-page="start">Open Getting started →</a></div>
+<div class="card"><h3>Data layer</h3><p>The item schema, ID generation, and the MongoDB operations behind each route.</p><a class="page-link" href="#db" data-page="db">Open Data layer →</a></div>
+<div class="card"><h3>Add a status field</h3><p>A worked example of changing the schema, validation, tests, and docs together.</p><a class="page-link" href="#field" data-page="field">Open the tutorial →</a></div>
+<div class="card"><h3>API reference</h3><p>Endpoints, request bodies, example responses, and error codes.</p><a class="page-link" href="#api" data-page="api">Open API reference →</a></div>
+</div>
 </section>
 
-<section id="api" hidden>
-<div class="crumb">Catalog API / Guides</div>
-<h1>Routing &amp; Local Testing</h1>
-<div class="meta"><span class="av">CE</span>Company Employee &nbsp;Version 1.03</div>
-<p>All routes are served under <code>/api/v1</code> require a bearer token and return JSON.</p>
-
-<h2>Endpoints</h2>
-<div class="tbl"><table>
-<tr><th>Method</th><th>Path</th><th>Purpose</th></tr>
-<tr><td><span class="l POST">POST</span></td><td><code>/items</code></td><td>Creates a Catalog item and assigns a unique <code>catalogId</code>.</td></tr>
-<tr><td><span class="l GET">GET</span></td><td><code>/items</code></td><td>Returns items with optional <code>type</code> filtering and page-based pagination.</td></tr>
-<tr><td><span class="l GET">GET</span></td><td><code>/items/:catalogId</code></td><td>Returns a single item identified by <code>catalogId</code>, or <code>404</code> when none exists.</td></tr>
-<tr><td><span class="l PUT">PUT</span></td><td><code>/items/:catalogId</code></td><td>Replaces an existing item; the required fields must be supplied because the document is replaced rather than merged.</td></tr>
-<tr><td><span class="l DELETE">DELETE</span></td><td><code>/items/:catalogId</code></td><td>Deletes the matching item and reports whether a document was removed.</td></tr>
-</table></div>
-
-<div class="panel"><b>POST details</b>See <a href=".">Intellectual Property</a> & <a href=".">Learning Materials</a> for POST fields.</div>
-
-
-
-<h2>Run locally</h2>
-<pre><code>git clone [repo-url]
-cd Catalog-api
-npm install
-MONGO_URI=mongodb://localhost:27017 API_TOKEN=dev-token npm start
-# Listening on http://localhost:3000</code></pre>
-
-<h2>Call the API from Postman</h2>
+<section id="start" hidden>
+<div class="crumb">Catalog API / Getting started</div>
+<h1>Getting started</h1>
+<div class="meta">Version 1.3.0</div>
+<p>This guide sets up the Sample Catalog API for local development and confirms that it can respond to a request.</p>
+<h2>Prerequisites</h2>
+<ul>
+<li>Node.js 18 or later</li>
+<li>MongoDB 7.0 or later, running locally or reachable over the network</li>
+<li>Access to the project repository</li>
+<li>A MongoDB user with read and write permissions on the <code>Catalog</code> database</li>
+</ul>
+<h2>Install</h2>
 <ol>
-<li>Import <code>Catalog.postman_collection.json</code> from the <code>/docs</code> folder.</li>
-<li>Create an environment with <code>baseUrl</code> set to <code>http://localhost:3000/api/v1</code> and <code>token</code> set to <code>dev-token</code>.</li>
-<li>In the collection settings, set Authorization to Bearer Token with the value <code>{{token}}</code>.</li>
+<li>Clone the repository using the URL provided with your project access, then change into the project directory.</li>
+<li>From the directory that contains <code>package.json</code>, install the dependencies:
+<pre><code>npm install</code></pre></li>
 </ol>
-
-<div class="panel warn"><b>Accessing for the first time</b>Be sure to run the <code>AuthInit.sh</code> for default key & token data. Otherwise you must manually <code>Post</code> the Bearer token credentials. </div>
-
-
-<p>Example request:</p>
+<h2>Configure the environment</h2>
+<p>The API reads two environment variables at startup.</p>
+<div class="tbl"><table>
+<tr><th>Variable</th><th>Required</th><th>Description</th></tr>
+<tr><td><code>MONGO_URI</code></td><td>No</td><td>MongoDB connection string. Defaults to <code>mongodb://localhost:27017</code>. Set it when using another host or credentials.</td></tr>
+<tr><td><code>API_TOKEN</code></td><td>Yes</td><td>The bearer token that clients must send. There is no default.</td></tr>
+</table></div>
+<p>For local development, set both variables in the shell that starts the server:</p>
+<pre><code>export MONGO_URI="mongodb://localhost:27017"
+export API_TOKEN="dev-token"
+npm start</code></pre>
+<div class="panel warn"><b>Development credential only</b><code>dev-token</code> is an example value for local use. In any shared or deployed environment, use a long random secret and keep it out of source control.</div>
+<h2>Set up the database</h2>
+<p>The API uses the <code>items</code> collection in the <code>Catalog</code> database. At startup, <code>connect()</code> creates a unique ascending index on <code>catalogId</code>. ID generation also writes to a <code>counters</code> collection (see <a class="page-link" href="#db" data-page="db" data-anchor="ids">Catalog ID generation</a>), so the database user must be able to create and update both collections.</p>
+<h2>Start and verify the API</h2>
+<p>Run <code>npm start</code>. The server listens on <code>http://localhost:3000</code>. With the example configuration, request one item using the <code>dev-token</code> value set in <code>API_TOKEN</code>:</p>
+<pre><code>curl -i \
+  -H "Authorization: Bearer dev-token" \
+  "http://localhost:3000/api/v1/items?page=1&amp;limit=1"</code></pre>
+<p>A successful request returns <code>200 OK</code> with a JSON object containing <code>results</code>, <code>page</code>, <code>limit</code>, and <code>total</code>. On an empty database, <code>results</code> is an empty array.</p>
+<h2 id="auth">Authentication</h2>
+<p>Every endpoint requires a bearer token. Clients send the value of <code>API_TOKEN</code> in the <code>Authorization</code> header:</p>
+<pre><code>Authorization: Bearer &lt;API_TOKEN&gt;</code></pre>
+<p>With the example configuration, the header is <code>Authorization: Bearer dev-token</code>. The API has no endpoint for creating tokens; the operator sets the token at startup. The optional <code>AuthInit.sh</code> script can set up the local demonstration token, but it is not needed if you export <code>API_TOKEN</code> yourself.</p>
+<h2>Use the API in Postman</h2>
+<ol>
+<li>Select <b>Import</b> and choose <code>Catalog.postman_collection.json</code> from the project's <code>docs</code> directory.</li>
+<li>Create an environment, such as <b>Local Catalog API</b>, with two variables: <code>baseUrl</code> set to <code>http://localhost:3000/api/v1</code> and <code>token</code> set to the value of <code>API_TOKEN</code>.</li>
+<li>Select that environment. On the collection, set the Authorization type to <b>Bearer Token</b> with the value <code>{{token}}</code>.</li>
+<li>Open the create-item request, use the body below, and select <b>Send</b>.</li>
+</ol>
 <pre><code>POST {{baseUrl}}/items
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "title": "04/17 Sales CRM Onboarding Workshop Slides",
+  "title": "Sales CRM Onboarding Workshop Slides",
   "type": "training",
   "owner": "Learning and Development",
   "tags": ["onboarding", "slides"]
 }</code></pre>
-<p>Response, <code>201 Created</code>:</p>
-<pre><code>{
-  "catalogId": "CAT-0042",
-  "title": "04/17 Sales CRM Onboarding Workshop Slides",
-  "type": "training",
-  "owner": "Learning and Development",
-  "description": "",
-  "tags": ["onboarding", "slides"],
-  "createdAt": "2025-03-04T14:22:10.000Z",
-  "updatedAt": "2025-03-04T14:22:10.000Z"
-}</code></pre>
-
-<h2>Errors</h2>
+<p>A valid request returns <code>201 Created</code> with the new item, including a generated <code>catalogId</code>, a <code>status</code> of <code>draft</code>, and server-generated timestamps.</p>
+<h3>Troubleshooting</h3>
 <div class="tbl"><table>
-<tr><th>Status</th><th>error</th><th>Resolution</th></tr>
-<tr><td>400</td><td><code>invalid_parameters</code></td><td>Check that <code>title</code>, <code>type</code>, and <code>owner</code> are present and that <code>type</code> is <code>ip</code> or <code>training</code>.</td></tr>
-<tr><td>401</td><td><code>unauthorized</code></td><td>Check the <code>Authorization</code> header and token value.</td></tr>
-<tr><td>404</td><td><code>not_found</code></td><td>No item exists with that <code>catalogId</code>.</td></tr>
-<tr><td>409</td><td><code>duplicate_catalog_id</code></td><td>An item with that identifier already exists. Retry the request.</td></tr>
+<tr><th>Result</th><th>Likely cause</th><th>Resolution</th></tr>
+<tr><td><code>401 Unauthorized</code></td><td>The token is missing or differs from the server's <code>API_TOKEN</code>.</td><td>Check the selected environment, the token value, and the Bearer Token setting.</td></tr>
+<tr><td>Connection refused or timeout</td><td>The API is not running at <code>localhost:3000</code>, or MongoDB was unavailable at startup.</td><td>Confirm the server is running, then check <code>MONGO_URI</code> and the MongoDB service.</td></tr>
+<tr><td><code>400 Bad Request</code></td><td>A required field is missing, or a value has the wrong type or is not allowed.</td><td>Compare the body with the <a class="page-link" href="#api" data-page="api" data-anchor="create">request fields</a>.</td></tr>
 </table></div>
+<p>For other status codes, see the <a class="page-link" href="#api" data-page="api" data-anchor="errors">error reference</a>.</p>
 </section>
 
-<section id="log" hidden>
-<div class="crumb">Catalog API / Reference</div>
-<h1>Changelog</h1>
-<div class="meta"><span class="av2">MB</span>MD Bot &nbsp; v1.3.0
-<button class="src" id="srcbtn" style="margin-left:auto">View Markdown source</button></div>
-<div class="md" id="mdout"></div>
-<pre id="mdsrc" hidden><code></code></pre>
-</section>
+<section id="db" hidden>
+<div class="crumb">Catalog API / Guides</div>
+<h1>Data layer</h1>
+<div class="meta">Version 1.3.0</div>
+<p>The data layer stores each catalog item as a MongoDB document. It defines the item schema, generates catalog IDs, and implements the MongoDB operations called by the API routes.</p><p>For Node.js, MongoDB, and database permission requirements, see <a href="#start" class="page-link" data-page="start">Getting started</a>.</p>
+<h2>Document structure</h2>
+<p>Dates are stored as BSON dates and returned as ISO 8601 strings in JSON.</p>
+<div class="tbl"><table>
+<tr><th>Field</th><th>Type</th><th>Required in request</th><th>Default</th><th>Description</th></tr>
+<tr><td><code>catalogId</code></td><td>string</td><td>No (generated)</td><td>—</td><td>Unique ID in the form <code>CAT-0001</code>, generated from an atomic sequence.</td></tr>
+<tr><td><code>title</code></td><td>string</td><td>Yes</td><td>—</td><td>Display name of the item.</td></tr>
+<tr><td><code>type</code></td><td>string</td><td>Yes</td><td>—</td><td>Item category: <code>ip</code> or <code>training</code>.</td></tr>
+<tr><td><code>owner</code></td><td>string</td><td>Yes</td><td>—</td><td>Team or person responsible for the item.</td></tr>
+<tr><td><code>description</code></td><td>string</td><td>No</td><td><code>""</code></td><td>Short summary of the item.</td></tr>
+<tr><td><code>tags</code></td><td>array of strings</td><td>No</td><td><code>[]</code></td><td>Labels for grouping and search.</td></tr>
+<tr><td><code>status</code></td><td>string</td><td>No</td><td><code>"draft"</code></td><td>Lifecycle state: <code>draft</code>, <code>active</code>, or <code>archived</code>. Always stored.</td></tr>
+<tr><td><code>createdAt</code></td><td>date</td><td>No (generated)</td><td>Time of insert</td><td>Creation time. Kept when an item is replaced.</td></tr>
+<tr><td><code>updatedAt</code></td><td>date</td><td>No (generated)</td><td>Time of write</td><td>Time of the latest create or replace.</td></tr>
+</table></div>
+<h2>Database connection</h2>
+<div class="fn">db.js</div>
+<pre><code>const { MongoClient } = require('mongodb');
 
-<section id="py" hidden>
-<div class="crumb">Catalog API / Tutorials</div>
-<h1>Adding a New Field</h1>
-<div class="meta"><span class="av">TW</span>Technical Writer &nbsp; Updated 09.22</div>
-<p>Sometimes old documents come alive. An identity might split into two, new information might emerge, or a record’s circumstances might simply change.
+const client = new MongoClient(
+  process.env.MONGO_URI || 'mongodb://localhost:27017'
+);
 
-This tutorial will walk you through how to add a new field to the Catalog API so your records can keep up with those changes.
+let items;
+let counters;
 
-<br/><br/>
-Let’s start with a simple one: a document's <code>status</code>. Take caution. Even a single "simple" field propogates changes everywhere - from MongoDB documents, request validators, create and replace operators, to this very documentation.</p>
+async function connect() {
+  await client.connect();
+  const db = client.db('Catalog');
+  items = db.collection('items');
+  counters = db.collection('counters');
 
-<h2>1. Define the allowed values</h2>
-<p>The API accepts three statuses: <code>draft</code>, <code>active</code>, and <code>archived</code>. Keep the allowed values in one place so the route and data layer use the same definition.</p>
-<pre><code>const allowedStatuses = ['draft', 'active', 'archived'];</code></pre>
+  await items.createIndex({ catalogId: 1 }, { unique: true });
+  return { items, counters };
+}
 
-<h2>2. Update the create operation</h2>
-<p>Add <code>status</code> to the function parameters and store it on the document. New items default to <code>draft</code> when the caller does not supply a value. <br/></p>
+module.exports = {
+  connect,
+  collection: () =&gt; items,
+  counters: () =&gt; counters
+};</code></pre>
+<p>Call <code>connect()</code> once at startup, before the server accepts requests. The shared <code>MongoClient</code> keeps a connection pool, so do not create a new client for each request.</p>
+<h2 id="ids">Catalog ID generation</h2>
+<p>Each ID comes from a counter document that MongoDB increments atomically with <code>$inc</code>, so concurrent requests never receive the same number. The unique index on <code>catalogId</code> acts as a backstop. Deleting an item does not free its number, so IDs reflect creation order, not the current record count.</p>
+<div class="fn">db.js</div>
+<pre><code>async function nextCatalogId() {
+  const result = await counters.findOneAndUpdate(
+    { _id: 'catalogId' },
+    { $inc: { seq: 1 } },
+    { upsert: true, returnDocument: 'after' }
+  );
+
+  // Supports both the ModifyResult and direct-document driver return shapes.
+  const counter = result &amp;&amp; result.value ? result.value : result;
+  if (!counter || typeof counter.seq !== 'number') {
+    throw new Error('Unable to allocate a catalog identifier');
+  }
+
+  return `CAT-${String(counter.seq).padStart(4, '0')}`;
+}</code></pre>
+<p>The first increment produces <code>CAT-0001</code>. If MongoDB reports duplicate-key error <code>11000</code>, the route returns <code>409 Conflict</code> with the <code>duplicate_catalog_id</code> error. A duplicate means the counter has fallen behind the stored data. Investigate it; retrying will not fix it.</p>
+<div class="panel warn"><b>Migrating an existing database</b>Before enabling the counter on a database that already holds items, set <code>seq</code> to the highest existing numeric suffix so the next ID does not collide. For example, if the highest ID is <code>CAT-0042</code>:<pre><code>db.counters.updateOne({ _id: 'catalogId' }, { $set: { seq: 42 } }, { upsert: true })</code></pre></div>
+<h2>Create an item</h2>
 <pre><code>async function createItem({
   title,
   type,
@@ -254,29 +248,40 @@ Let’s start with a simple one: a document's <code>status</code>. Take caution.
   status = 'draft'
 }) {
   const now = new Date();
-  const catalogId = 'CAT-' + String(await items.countDocuments() + 1).padStart(4, '0');
+  const catalogId = await nextCatalogId();
   const doc = {
-    catalogId, title, type, owner, description, tags, status,
+    catalogId,
+    title,
+    type,
+    owner,
+    description,
+    tags,
+    status,
     createdAt: now,
     updatedAt: now
   };
+
   await items.insertOne(doc);
   return doc;
 }</code></pre>
+<p>The route validates required fields and allowed values before calling this function. Omitted <code>description</code>, <code>tags</code>, and <code>status</code> take the defaults shown.</p>
+<h2>List items</h2>
+<pre><code>async function listItems({ type, page = 1, limit = 20 }) {
+  const filter = type ? { type } : {};
+  const [results, total] = await Promise.all([
+    items.find(filter)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .toArray(),
+    items.countDocuments(filter)
+  ]);
 
-<h2>3. Validate requests</h2>
-<p>The router should reject an unknown status before the request reaches the database. When the field is omitted, use <code>draft</code> as the default.</p>
-<div class="fn">routes/items.js</div>
-<pre><code>const { title, type, owner, status = 'draft' } = req.body;
-
-if (!title || !owner || !['ip', 'training'].includes(type) ||
-    !allowedStatuses.includes(status)) {
-  return res.status(400).json({ error: 'invalid_parameters' });
+  return { results, page, limit, total };
 }</code></pre>
-<div class="panel"><b>Why validate here?</b>Rejecting an invalid value at the API boundary gives callers a predictable <code>400</code> response and prevents invalid documents from reaching the database.</div>
-
-<h2>4. Update replacements</h2>
-<p>Because <code>PUT /items/:catalogId</code> replaces the document, it must include <code>status</code> in the replacement object. Otherwise an existing status would be dropped.</p>
+<p>Results are sorted by <code>createdAt</code>, newest first. The function accepts an optional <code>type</code> filter and page-based pagination. It does not filter on <code>status</code>.</p>
+<h2>Replace an item</h2>
+<p><code>findOneAndReplace()</code> swaps in a new document instead of merging fields, so any field left out is removed. <code>replaceItem()</code> therefore writes every field explicitly. It reads the existing <code>createdAt</code> first and keeps it, sets <code>updatedAt</code> to the current time, and resets an omitted <code>status</code> to <code>draft</code>. If the item does not exist, it returns <code>null</code> and the route responds <code>404 Not Found</code>.</p>
 <pre><code>async function replaceItem(catalogId, {
   title,
   type,
@@ -285,133 +290,437 @@ if (!title || !owner || !['ip', 'training'].includes(type) ||
   tags = [],
   status = 'draft'
 }) {
-  return items.findOneAndReplace(
+  const existing = await items.findOne(
     { catalogId },
-    { catalogId, title, type, owner, description, tags, status,
-      updatedAt: new Date() },
+    { projection: { createdAt: 1 } }
+  );
+
+  if (!existing) return null;
+
+  const result = await items.findOneAndReplace(
+    { catalogId },
+    {
+      catalogId,
+      title,
+      type,
+      owner,
+      description,
+      tags,
+      status,
+      createdAt: existing.createdAt,
+      updatedAt: new Date()
+    },
     { returnDocument: 'after' }
   );
+
+  // Older driver versions wrap the document in result.value.
+  return result && Object.prototype.hasOwnProperty.call(result, 'value')
+    ? result.value
+    : result;
 }</code></pre>
+<h2>Delete an item</h2>
+<pre><code>async function deleteItem(catalogId) {
+  const { deletedCount } = await items.deleteOne({ catalogId });
+  return deletedCount === 1;
+}</code></pre>
+<p><code>deleteOne()</code> permanently removes the document. The function returns <code>true</code> if a document was deleted and <code>false</code> if the ID does not exist. The route responds <code>200 OK</code> with a confirmation, or <code>404 Not Found</code>. Unexpected database failures return <code>500 Internal Server Error</code>.</p>
+</section>
 
-<h2>5. Test the new behavior</h2>
-<p>Test both the default and the validation rule. The first request should store <code>draft</code>; the second should return <code>400</code>.</p>
-<pre><code>it('defaults a new item to draft', async () =&gt; {
-  const response = await request(app)
-    .post('/api/v1/items')
-    .send({ title: 'Example', type: 'training', owner: 'L&amp;D' });
-
-  expect(response.status).toBe(201);
-  expect(response.body.status).toBe('draft');
-});
-
-it('rejects an invalid status', async () =&gt; {
-  const response = await request(app)
-    .post('/api/v1/items')
-    .send({
-      title: 'Example',
-      type: 'training',
-      owner: 'L&amp;D',
-      status: 'pending'
-    });
-
-  expect(response.status).toBe(400);
-});</code></pre>
-
-<h2>6. Update the API reference</h2>
-<p>Add <code>status</code> to the request table and document the accepted values and default.</p>
+<section id="api" hidden>
+<div class="crumb">Catalog API / Reference</div>
+<h1>API reference</h1>
+<div class="meta">Version 1.3.0</div>
+<p>All endpoints are under the <code>/api/v1</code> base path, require a bearer token, and return JSON. Any endpoint can also return <code>401</code> (missing or invalid token) or <code>500</code> (unexpected failure); the endpoint sections list only the other errors. For token setup, see <a href="#start" class="page-link" data-page="start" data-anchor="auth">Getting started</a>.</p>
+<h2>Endpoints</h2>
 <div class="tbl"><table>
-<tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
-<tr><td><code>status</code></td><td>string</td><td>No</td><td>Either <code>draft</code>, <code>active</code>, or <code>archived</code>. Defaults to <code>draft</code>.</td></tr>
+<tr><th>Method</th><th>URL</th><th>Description</th><th>Success</th></tr>
+<tr><td><span class="l POST">POST</span></td><td><code>/api/v1/items</code></td><td>Create an item and assign a catalog ID.</td><td><code>201</code></td></tr>
+<tr><td><span class="l GET">GET</span></td><td><code>/api/v1/items</code></td><td>List items, with optional type filter and pagination.</td><td><code>200</code></td></tr>
+<tr><td><span class="l GET">GET</span></td><td><code>/api/v1/items/:catalogId</code></td><td>Retrieve one item.</td><td><code>200</code></td></tr>
+<tr><td><span class="l PUT">PUT</span></td><td><code>/api/v1/items/:catalogId</code></td><td>Replace an item.</td><td><code>200</code></td></tr>
+<tr><td><span class="l DELETE">DELETE</span></td><td><code>/api/v1/items/:catalogId</code></td><td>Permanently delete an item.</td><td><code>200</code></td></tr>
 </table></div>
+<h2>Request headers</h2>
+<div class="tbl"><table>
+<tr><th>Header</th><th>Required</th><th>Description</th></tr>
+<tr><td><code>Authorization: Bearer &lt;token&gt;</code></td><td>Yes</td><td>The value of the server's <code>API_TOKEN</code>.</td></tr>
+<tr><td><code>Content-Type: application/json</code></td><td>POST and PUT</td><td>Declares a JSON request body.</td></tr>
+<tr><td><code>Accept: application/json</code></td><td>No</td><td>Declares that the client expects JSON.</td></tr>
+</table></div>
+<h2 id="create">Create an item</h2>
+<p><span class="l POST">POST</span> <code>/api/v1/items</code></p>
+<p>Creates an item. The server generates <code>catalogId</code>, <code>createdAt</code>, and <code>updatedAt</code>.</p>
+<div class="tbl"><table>
+<tr><th>Body field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+<tr><td><code>title</code></td><td>string</td><td>Yes</td><td>Display name.</td></tr>
+<tr><td><code>type</code></td><td>string</td><td>Yes</td><td><code>ip</code> or <code>training</code>.</td></tr>
+<tr><td><code>owner</code></td><td>string</td><td>Yes</td><td>Team or person responsible.</td></tr>
+<tr><td><code>description</code></td><td>string</td><td>No</td><td>Defaults to an empty string.</td></tr>
+<tr><td><code>tags</code></td><td>array of strings</td><td>No</td><td>Defaults to an empty array.</td></tr>
+<tr><td><code>status</code></td><td>string</td><td>No</td><td><code>draft</code>, <code>active</code>, or <code>archived</code>. Defaults to <code>draft</code>.</td></tr>
+</table></div>
+<p><b>Example request</b></p>
+<pre><code>POST /api/v1/items
+Authorization: Bearer &lt;token&gt;
+Content-Type: application/json
 
-<h2>End Result</h2>
-<p>All newly created items now have an explicit lifecycle:</p>
-<pre><code>{
-  "catalogId": "CAT-0042",
-  "title": "Onboarding Workshop Slides",
+{
+  "title": "Sales CRM Onboarding Workshop Slides",
   "type": "training",
   "owner": "Learning and Development",
-  "status": "draft"
+  "description": "Workshop materials for new staff.",
+  "tags": ["onboarding", "slides"],
+  "status": "active"
 }</code></pre>
-<p>And that’s all there is to it. With status now carried through the API, clients can rely on the same information wherever - <i> and whenever </i> - the record is read or updated.</p>
+<p><b>Example response — 201 Created</b></p>
+<pre><code>{
+  "catalogId": "CAT-0042",
+  "title": "Sales CRM Onboarding Workshop Slides",
+  "type": "training",
+  "owner": "Learning and Development",
+  "description": "Workshop materials for new staff.",
+  "tags": ["onboarding", "slides"],
+  "status": "active",
+  "createdAt": "2025-03-04T14:22:10.000Z",
+  "updatedAt": "2025-03-04T14:22:10.000Z"
+}</code></pre>
+<p><b>Errors:</b> <code>400 invalid_parameters</code> for a missing or invalid field; <code>409 duplicate_catalog_id</code> if the generated ID already exists.</p>
+<h2>List items</h2>
+<p><span class="l GET">GET</span> <code>/api/v1/items</code></p>
+<p>Returns items sorted by <code>createdAt</code>, newest first. All query parameters are optional. Each result includes <code>status</code>, but you cannot filter on it.</p>
+<div class="tbl"><table>
+<tr><th>Query parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+<tr><td><code>type</code></td><td>string</td><td>None</td><td>Return only <code>ip</code> or <code>training</code> items.</td></tr>
+<tr><td><code>page</code></td><td>integer</td><td><code>1</code></td><td>Page number, starting at 1.</td></tr>
+<tr><td><code>limit</code></td><td>integer</td><td><code>20</code></td><td>Maximum number of items per page.</td></tr>
+</table></div>
+<p><b>Example request</b></p>
+<pre><code>GET /api/v1/items?type=training&amp;page=1&amp;limit=20
+Authorization: Bearer &lt;token&gt;</code></pre>
+<p><b>Example response — 200 OK</b></p>
+<pre><code>{
+  "results": [
+    {
+      "catalogId": "CAT-0042",
+      "title": "Sales CRM Onboarding Workshop Slides",
+      "type": "training",
+      "owner": "Learning and Development",
+      "description": "Workshop materials for new staff.",
+      "tags": ["onboarding", "slides"],
+      "status": "active",
+      "createdAt": "2025-03-04T14:22:10.000Z",
+      "updatedAt": "2025-03-04T14:22:10.000Z"
+    }
+  ],
+  "page": 1,
+  "limit": 20,
+  "total": 1
+}</code></pre>
+<p><b>Errors:</b> <code>400 invalid_parameters</code> for an invalid query value.</p>
+<h2>Retrieve an item</h2>
+<p><span class="l GET">GET</span> <code>/api/v1/items/:catalogId</code></p>
+<p>Returns the complete item for the <code>catalogId</code> in the path, for example <code>CAT-0042</code>.</p>
+<p><b>Example request</b></p>
+<pre><code>GET /api/v1/items/CAT-0042
+Authorization: Bearer &lt;token&gt;</code></pre>
+<p><b>Example response — 200 OK</b></p>
+<pre><code>{
+  "catalogId": "CAT-0042",
+  "title": "Sales CRM Onboarding Workshop Slides",
+  "type": "training",
+  "owner": "Learning and Development",
+  "description": "Workshop materials for new staff.",
+  "tags": ["onboarding", "slides"],
+  "status": "active",
+  "createdAt": "2025-03-04T14:22:10.000Z",
+  "updatedAt": "2025-03-04T14:22:10.000Z"
+}</code></pre>
+<p><b>Errors:</b> <code>404 not_found</code> if no item has that ID.</p>
+<h2>Replace an item</h2>
+<p><span class="l PUT">PUT</span> <code>/api/v1/items/:catalogId</code></p>
+<p>Replaces the whole item. The body takes the same fields as <a href="#api" class="page-link" data-page="api" data-anchor="create">Create an item</a>. Any optional field you omit resets to its default, including <code>status</code>, which resets to <code>draft</code>. The server keeps the original <code>createdAt</code>, sets <code>updatedAt</code> to the time of replacement, and drops fields outside the schema.</p>
+<p><b>Example request</b></p>
+<pre><code>PUT /api/v1/items/CAT-0042
+Authorization: Bearer &lt;token&gt;
+Content-Type: application/json
 
-<div class="md" id="pyout"></div>
+{
+  "title": "Updated Sales CRM Workshop",
+  "type": "training",
+  "owner": "Learning and Development",
+  "description": "Revised workshop materials.",
+  "tags": ["onboarding", "revised"],
+  "status": "archived"
+}</code></pre>
+<p><b>Example response — 200 OK</b></p>
+<pre><code>{
+  "catalogId": "CAT-0042",
+  "title": "Updated Sales CRM Workshop",
+  "type": "training",
+  "owner": "Learning and Development",
+  "description": "Revised workshop materials.",
+  "tags": ["onboarding", "revised"],
+  "status": "archived",
+  "createdAt": "2025-03-04T14:22:10.000Z",
+  "updatedAt": "2025-03-05T09:15:00.000Z"
+}</code></pre>
+<p><b>Errors:</b> <code>400 invalid_parameters</code> for a missing or invalid field; <code>404 not_found</code> if no item has that ID.</p>
+<h2>Delete an item</h2>
+<p><span class="l DELETE">DELETE</span> <code>/api/v1/items/:catalogId</code></p>
+<p>Permanently deletes the item. The deletion cannot be undone through the API.</p>
+<p><b>Example request</b></p>
+<pre><code>DELETE /api/v1/items/CAT-0042
+Authorization: Bearer &lt;token&gt;</code></pre>
+<p><b>Example response — 200 OK</b></p>
+<pre><code>{
+  "deleted": true,
+  "catalogId": "CAT-0042"
+}</code></pre>
+<p><b>Errors:</b> <code>404 not_found</code> if no item has that ID.</p>
+<h2 id="errors">Error reference</h2>
+<p>Errors return a JSON object with an <code>error</code> identifier and a readable <code>message</code>:</p>
+<pre><code>{
+  "error": "not_found",
+  "message": "No catalog item found for CAT-0042"
+}</code></pre>
+<div class="tbl"><table>
+<tr><th>Status</th><th><code>error</code></th><th>Cause</th><th>Resolution</th></tr>
+<tr><td>400</td><td><code>invalid_parameters</code></td><td>A required field is missing, a value has the wrong type, or <code>type</code> or <code>status</code> is not an allowed value.</td><td>Check the request fields and allowed values. Pagination values must be positive integers.</td></tr>
+<tr><td>401</td><td><code>unauthorized</code></td><td>The bearer token is missing or does not match <code>API_TOKEN</code>.</td><td>Send the correct <code>Authorization</code> header.</td></tr>
+<tr><td>404</td><td><code>not_found</code></td><td>No item has the <code>catalogId</code> in the request.</td><td>Use an ID returned by a create or list request.</td></tr>
+<tr><td>409</td><td><code>duplicate_catalog_id</code></td><td>POST only. The generated ID already exists, so the unique index rejected the insert.</td><td>Compare the counter's <code>seq</code> with the highest existing ID and correct the counter. Do not delete an unrelated item to clear the conflict.</td></tr>
+<tr><td>500</td><td><code>internal_error</code></td><td>An unexpected application or database error.</td><td>Check the server logs and the database connection.</td></tr>
+</table></div>
+</section>
+
+<section id="log" hidden>
+<div class="crumb">Catalog API / Reference</div>
+<h1>Changelog</h1>
+<div class="meta">Version 1.3.0
+<button class="src" id="srcbtn" type="button">View Markdown source</button></div>
+<div class="md" id="mdout"></div>
+<pre id="mdsrc" hidden><code></code></pre>
+</section>
+
+<section id="field" hidden>
+<div class="crumb">Catalog API / Guides</div>
+<h1>Add a status field</h1>
+<div class="meta">Version 1.3.0</div>
+<p>This tutorial adds the <code>status</code> field to catalog items, as released in version 1.3.0. The change touches the field definition, the create and replace functions, request validation, the tests, and the API reference. The snippets show only the lines that change; the complete functions are in the <a href="#db" class="page-link" data-page="db">data layer guide</a>.</p>
+<h2>1. Define the allowed values</h2>
+<p>Keep the allowed values and the default in one place.</p>
+<pre><code>const allowedStatuses = ['draft', 'active', 'archived'];
+const defaultStatus = 'draft';</code></pre>
+<h2>2. Store the field on create</h2>
+<p>Add <code>status</code> to the <code>createItem()</code> input with the default, and include it in the inserted document. Keep generating IDs with <code>nextCatalogId()</code>. Deriving them from <code>countDocuments() + 1</code> reuses IDs after deletions and produces duplicates under concurrent requests.</p>
+<pre><code>async function createItem({
+  title, type, owner, description = '', tags = [],
+  status = defaultStatus
+}) {
+  // Keep the existing ID and timestamp generation.
+  const now = new Date();
+  const catalogId = await nextCatalogId();
+
+  const doc = {
+    catalogId, title, type, owner, description, tags,
+    status,
+    createdAt: now,
+    updatedAt: now
+  };
+
+  // Keep the existing insert and return logic.
+}</code></pre>
+<h2>3. Validate requests</h2>
+<p>Apply the default first, so an omitted <code>status</code> passes as <code>draft</code>. Reject any other value with <code>400</code> and <code>invalid_parameters</code> before anything is written to MongoDB.</p>
+<div class="fn">routes/items.js</div>
+<pre><code>const { status = defaultStatus } = req.body ?? {};
+
+if (!allowedStatuses.includes(status)) {
+  return res.status(400).json({
+    error: 'invalid_parameters',
+    message: 'status must be draft, active, or archived'
+  });
+}</code></pre>
+<h2>4. Write the field on replace</h2>
+<p><code>PUT</code> replaces the whole document, so <code>replaceItem()</code> must write <code>status</code> explicitly, with the same default as create. If a request omits it, the item goes back to <code>draft</code>.</p>
+<pre><code>async function replaceItem(catalogId, {
+  title, type, owner, description = '', tags = [],
+  status = defaultStatus
+}) {
+  const existing = await items.findOne(
+    { catalogId },
+    { projection: { createdAt: 1 } }
+  );
+  if (!existing) return null;
+
+  const replacement = {
+    catalogId, title, type, owner, description, tags,
+    status,
+    createdAt: existing.createdAt,
+    updatedAt: new Date()
+  };
+
+  // Pass replacement to findOneAndReplace().
+}</code></pre>
+<h2>5. Test the field</h2>
+<p>Three cases matter: a new item defaults to <code>draft</code>, an unsupported value is rejected, and a replacement that omits <code>status</code> resets it to <code>draft</code>. The examples use the project's existing <code>app</code> instance and request helper.</p>
+<pre><code>it('defaults a new item to draft', async () =&gt; {
+  const res = await request(app)
+    .post('/api/v1/items')
+    .set('Authorization', 'Bearer test-token')
+    .send({ title: 'Example', type: 'training', owner: 'L&amp;D' });
+
+  expect(res.status).toBe(201);
+  expect(res.body.status).toBe('draft');
+});
+
+it('rejects an unsupported status', async () =&gt; {
+  const res = await request(app)
+    .post('/api/v1/items')
+    .set('Authorization', 'Bearer test-token')
+    .send({ title: 'Example', type: 'training', owner: 'L&amp;D', status: 'pending' });
+
+  expect(res.status).toBe(400);
+  expect(res.body.error).toBe('invalid_parameters');
+});
+
+it('resets status to draft when a replacement omits it', async () =&gt; {
+  const created = await request(app)
+    .post('/api/v1/items')
+    .set('Authorization', 'Bearer test-token')
+    .send({ title: 'Example', type: 'training', owner: 'L&amp;D', status: 'active' });
+
+  const replaced = await request(app)
+    .put(`/api/v1/items/${created.body.catalogId}`)
+    .set('Authorization', 'Bearer test-token')
+    .send({ title: 'Replaced', type: 'training', owner: 'L&amp;D' });
+
+  expect(replaced.status).toBe(200);
+  expect(replaced.body.status).toBe('draft');
+  expect(replaced.body.createdAt).toBe(created.body.createdAt);
+});</code></pre>
+<h2>6. Update the API reference</h2>
+<p>Document <code>status</code> as an optional field in the <a href="#api" class="page-link" data-page="api" data-anchor="create">POST and PUT request schemas</a>, including its allowed values and <code>draft</code> default. Include it in the example responses. List responses also include the field, but <code>GET /items</code> does not support a status filter.</p>
 </section>
 
 </main>
 </div>
 <script>
-const changelog = `## 1.3.0 - 2025-03-04
-- **Added** \`status\` filter and \`page\`/\`limit\` pagination on \`GET /shipments\`.
-- **Added** \`updatedAt\` field, set on every status change.
-- **Changed** duplicate tracking codes now return \`409\` instead of \`500\`.
+const changelog = `## Version 1.3.0
+Release date: 2025-03-04
 
-## 1.2.0 - 2025-01-20
-- **Added** \`DELETE /shipments/:code\`.
-- **Deprecated** \`GET /shipments/all\`. Use \`GET /shipments\` instead. Removal planned for 2.0.0.
+### Added
+- \`status\` field on catalog items. Allowed values are \`draft\`, \`active\`, and \`archived\`; the default is \`draft\`.
+- Optional \`page\` and \`limit\` query parameters on \`GET /items\`.
 
-## 1.1.1 - 2024-12-09
-- **Fixed** \`PATCH\` returning the document before the update. It now returns the updated document.
+### Changed
+- Duplicate catalog identifiers return \`409 Conflict\` with the \`duplicate_catalog_id\` error.
 
-## 1.0.0 - 2024-11-12
-- Initial release: create, list, and fetch shipments with bearer-token auth.`;
+### Breaking changes
+- None.
 
+## Version 1.2.0
+Release date: 2025-02-11
 
-function inline(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')
- .replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');}
-function md(src){
-  let out='',list=false,fence=false;
-  for(const line of src.split('\n')){
-    if(line.startsWith('```')){out+=fence?'</code></pre>':'<pre><code>';fence=!fence;continue}
-    if(fence){out+=line.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'\n';continue}
-    const li=line.match(/^[-*] (.*)/);
-    if(li){if(!list){out+='<ul>';list=true}out+='<li>'+inline(li[1])+'</li>';continue}
-    if(list){out+='</ul>';list=false}
-    const h=line.match(/^(#{1,3}) (.*)/);
-    if(h){const n=Math.max(2,h[1].length);out+=`<h${n}>${inline(h[2])}</h${n}>`}
-    else if(line.trim()){out+='<p>'+inline(line)+'</p>'}
-  }
-  return out+(list?'</ul>':'');
+### Added
+- Optional \`type\` filter on \`GET /items\`.
+
+### Fixed
+- \`PUT /items/:catalogId\` keeps the original \`createdAt\` value when an item is replaced.
+
+## Version 1.1.0
+Release date: 2025-01-20
+
+### Changed
+- Catalog IDs come from an atomic counter instead of a document count, so deleting an item no longer causes an ID to be reused.`;
+
+function escapeHTML(value) {
+  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
-document.getElementById('mdout').innerHTML=md(changelog);
-document.querySelector('#mdsrc code').textContent=changelog;
-document.getElementById('srcbtn').onclick=e=>{
-  const s=document.getElementById('mdsrc'),o=document.getElementById('mdout');
-  s.hidden=!s.hidden;o.hidden=!s.hidden;
-  e.target.textContent=s.hidden?'View Markdown source':'View rendered page';
-};
-function addCopyButtons(){
-  document.querySelectorAll('pre').forEach(pre=>{
-    if(pre.querySelector('.copy-code')) return;
-    const button=document.createElement('button');
-    button.className='copy-code';
-    button.type='button';
-    button.textContent='Copy';
-    button.setAttribute('aria-label','Copy code');
-    button.onclick=async ()=>{
-      const code=pre.querySelector('code');
-      try{
+function inlineMarkdown(value) {
+  return escapeHTML(value)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+}
+function renderMarkdown(source) {
+  let output = '';
+  let listOpen = false;
+  for (const line of source.split('\n')) {
+    const listItem = line.match(/^[-*] (.*)$/);
+    if (listItem) {
+      if (!listOpen) { output += '<ul>'; listOpen = true; }
+      output += '<li>' + inlineMarkdown(listItem[1]) + '</li>';
+      continue;
+    }
+    if (listOpen) { output += '</ul>'; listOpen = false; }
+    const heading = line.match(/^(#{1,3}) (.*)$/);
+    if (heading) {
+      const level = Math.max(2, heading[1].length);
+      output += `<h${level}>${inlineMarkdown(heading[2])}</h${level}>`;
+    } else if (line.trim()) {
+      output += '<p>' + inlineMarkdown(line) + '</p>';
+    }
+  }
+  return output + (listOpen ? '</ul>' : '');
+}
+
+const markdownOutput = document.getElementById('mdout');
+const markdownSource = document.querySelector('#mdsrc code');
+markdownOutput.innerHTML = renderMarkdown(changelog);
+markdownSource.textContent = changelog;
+document.getElementById('srcbtn').addEventListener('click', event => {
+  const source = document.getElementById('mdsrc');
+  source.hidden = !source.hidden;
+  markdownOutput.hidden = !source.hidden;
+  event.currentTarget.textContent = source.hidden ? 'View Markdown source' : 'View rendered page';
+});
+
+function addCopyButtons() {
+  document.querySelectorAll('pre').forEach(pre => {
+    if (pre.querySelector('.copy-code')) return;
+    const button = document.createElement('button');
+    button.className = 'copy-code';
+    button.type = 'button';
+    button.textContent = 'Copy';
+    button.setAttribute('aria-label', 'Copy code');
+    button.addEventListener('click', async () => {
+      const code = pre.querySelector('code');
+      try {
         await navigator.clipboard.writeText(code.textContent);
-        button.textContent='Copied';
-        setTimeout(()=>button.textContent='Copy',1200);
-      }catch{
-        button.textContent='Failed';
-        setTimeout(()=>button.textContent='Copy',1200);
+        button.textContent = 'Copied';
+      } catch {
+        button.textContent = 'Copy unavailable';
       }
-    };
+      window.setTimeout(() => { button.textContent = 'Copy'; }, 1400);
+    });
     pre.appendChild(button);
   });
 }
-
 addCopyButtons();
 
-const tabs=[...document.querySelectorAll('nav button')];
-function show(id){
-  tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.t===id));
-  document.querySelectorAll('main section').forEach(s=>s.hidden=s.id!==id);
-  window.scrollTo(0,0);
+const tabs = [...document.querySelectorAll('nav button[data-t]')];
+function showPage(id, updateHash = true) {
+  const target = document.getElementById(id);
+  if (!target) return;
+  tabs.forEach(tab => {
+    tab.setAttribute('aria-selected', String(tab.dataset.t === id));
+  });
+  document.querySelectorAll('main section').forEach(section => {
+    section.hidden = section.id !== id;
+  });
+  if (updateHash) history.replaceState(null, '', '#' + id);
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
-tabs.forEach(b=>b.onclick=()=>show(b.dataset.t));
+tabs.forEach(tab => tab.addEventListener('click', () => showPage(tab.dataset.t)));
+document.querySelectorAll('[data-page]').forEach(link => {
+  link.addEventListener('click', event => {
+    event.preventDefault();
+    showPage(link.dataset.page);
+    if (link.dataset.anchor) { const a = document.getElementById(link.dataset.anchor); if (a) a.scrollIntoView(); }
+  });
+});
+const initialPage = window.location.hash.slice(1);
+showPage(document.getElementById(initialPage) ? initialPage : 'home', false);
 </script>
 </body>
 </html>
