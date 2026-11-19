@@ -143,7 +143,7 @@ npm start</code></pre>
 <h2 id="auth">Authentication</h2>
 <p>Every endpoint requires a bearer token. Clients send the value of <code>API_TOKEN</code> in the <code>Authorization</code> header:</p>
 <pre><code>Authorization: Bearer &lt;API_TOKEN&gt;</code></pre>
-<p>With the example configuration, the header is <code>Authorization: Bearer dev-token</code>. The API has no endpoint for creating tokens; the operator sets the token at startup. The optional <code>AuthInit.sh</code> script can set up the local demonstration token, but it is not needed if you export <code>API_TOKEN</code> yourself.</p>
+<p>With the example configuration, the header is <code>Authorization: Bearer dev-token</code>. The operator creates and manages the secret outside the API, then sets <code>API_TOKEN</code> before starting the server. There is no token-creation endpoint and no credential POST step.</p>
 <h2>Use the API in Postman</h2>
 <ol>
 <li>Select <b>Import</b> and choose <code>Catalog.postman_collection.json</code> from the project's <code>docs</code> directory.</li>
@@ -191,6 +191,12 @@ Content-Type: application/json
 <tr><td><code>createdAt</code></td><td>date</td><td>No (generated)</td><td>Time of insert</td><td>Creation time. Kept when an item is replaced.</td></tr>
 <tr><td><code>updatedAt</code></td><td>date</td><td>No (generated)</td><td>Time of write</td><td>Time of the latest create or replace.</td></tr>
 </table></div>
+<div class="panel warn"><b>Existing records require a one-time backfill</b>MongoDB does not apply the new default to documents already stored. Before deploying 1.3.0, set missing statuses to <code>draft</code> so every item has the field:
+<pre><code>db.items.updateMany(
+  { status: { $exists: false } },
+  { $set: { status: 'draft' } }
+)</code></pre>
+This leaves existing status values unchanged. Run it once per database.</div>
 <h2>Database connection</h2>
 <div class="fn">db.js</div>
 <pre><code>const { MongoClient } = require('mongodb');
@@ -279,9 +285,10 @@ module.exports = {
 
   return { results, page, limit, total };
 }</code></pre>
-<p>Results are sorted by <code>createdAt</code>, newest first. The function accepts an optional <code>type</code> filter and page-based pagination. It does not filter on <code>status</code>.</p>
+<p>Results are sorted by <code>createdAt</code>, newest first. The supported filter is <code>type</code>; <code>status</code> is deliberately not a filter. Pagination defaults to page <code>1</code> and limit <code>20</code>, with a maximum limit of <code>100</code>.</p>
 <h2>Replace an item</h2>
-<p><code>findOneAndReplace()</code> swaps in a new document instead of merging fields, so any field left out is removed. <code>replaceItem()</code> therefore writes every field explicitly. It reads the existing <code>createdAt</code> first and keeps it, sets <code>updatedAt</code> to the current time, and resets an omitted <code>status</code> to <code>draft</code>. If the item does not exist, it returns <code>null</code> and the route responds <code>404 Not Found</code>.</p>
+<div class="panel warn"><b>PUT is full replacement, not a partial update</b><code>findOneAndReplace()</code> swaps in a complete document. Omitted optional fields are written with their defaults; they are not preserved. In particular, an existing <code>status: "active"</code> becomes <code>status: "draft"</code> when the PUT body omits <code>status</code>. Send every value you intend to keep. This API does not implement <code>PATCH</code>.</div>
+<p><code>replaceItem()</code> writes every schema field explicitly. It reads and preserves the existing <code>createdAt</code>, sets <code>updatedAt</code> to the current time, and resets omitted optional fields to their defaults. If the item does not exist, it returns <code>null</code> and the route responds <code>404 Not Found</code>.</p>
 <pre><code>async function replaceItem(catalogId, {
   title,
   type,
@@ -351,14 +358,15 @@ module.exports = {
 <p><span class="l POST">POST</span> <code>/api/v1/items</code></p>
 <p>Creates an item. The server generates <code>catalogId</code>, <code>createdAt</code>, and <code>updatedAt</code>.</p>
 <div class="tbl"><table>
-<tr><th>Body field</th><th>Type</th><th>Required</th><th>Description</th></tr>
-<tr><td><code>title</code></td><td>string</td><td>Yes</td><td>Display name.</td></tr>
-<tr><td><code>type</code></td><td>string</td><td>Yes</td><td><code>ip</code> or <code>training</code>.</td></tr>
-<tr><td><code>owner</code></td><td>string</td><td>Yes</td><td>Team or person responsible.</td></tr>
-<tr><td><code>description</code></td><td>string</td><td>No</td><td>Defaults to an empty string.</td></tr>
-<tr><td><code>tags</code></td><td>array of strings</td><td>No</td><td>Defaults to an empty array.</td></tr>
-<tr><td><code>status</code></td><td>string</td><td>No</td><td><code>draft</code>, <code>active</code>, or <code>archived</code>. Defaults to <code>draft</code>.</td></tr>
+<tr><th>Body field</th><th>Type</th><th>Required</th><th>Validation</th></tr>
+<tr><td><code>title</code></td><td>string</td><td>Yes</td><td>Trimmed; 1–160 characters. Empty or whitespace-only values are rejected.</td></tr>
+<tr><td><code>type</code></td><td>string</td><td>Yes</td><td>Exactly <code>ip</code> or <code>training</code>.</td></tr>
+<tr><td><code>owner</code></td><td>string</td><td>Yes</td><td>Trimmed; 1–120 characters. Empty or whitespace-only values are rejected.</td></tr>
+<tr><td><code>description</code></td><td>string</td><td>No</td><td>Maximum 2,000 characters; defaults to <code>""</code>. An empty string is valid.</td></tr>
+<tr><td><code>tags</code></td><td>array of strings</td><td>No</td><td>Maximum 20 tags; each is 1–40 characters after trimming. Defaults to <code>[]</code>; an empty array is valid.</td></tr>
+<tr><td><code>status</code></td><td>string</td><td>No</td><td>Exactly <code>draft</code>, <code>active</code>, or <code>archived</code>. Defaults to <code>draft</code>.</td></tr>
 </table></div>
+<p>Omitting an optional field applies its default; explicitly sending <code>null</code> is invalid. Only the fields listed above are accepted. Do not send server-managed <code>catalogId</code>, <code>createdAt</code>, or <code>updatedAt</code>; the API generates those values. These rules apply to both POST and PUT.</p>
 <p><b>Example request</b></p>
 <pre><code>POST /api/v1/items
 Authorization: Bearer &lt;token&gt;
@@ -387,12 +395,12 @@ Content-Type: application/json
 <p><b>Errors:</b> <code>400 invalid_parameters</code> for a missing or invalid field; <code>409 duplicate_catalog_id</code> if the generated ID already exists.</p>
 <h2>List items</h2>
 <p><span class="l GET">GET</span> <code>/api/v1/items</code></p>
-<p>Returns items sorted by <code>createdAt</code>, newest first. All query parameters are optional. Each result includes <code>status</code>, but you cannot filter on it.</p>
+<p>Returns items sorted by <code>createdAt</code>, newest first. Each result includes <code>status</code>. Filtering by <code>status</code> is intentionally unsupported; supplying a <code>status</code> query parameter returns <code>400 invalid_parameters</code>.</p>
 <div class="tbl"><table>
 <tr><th>Query parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
-<tr><td><code>type</code></td><td>string</td><td>None</td><td>Return only <code>ip</code> or <code>training</code> items.</td></tr>
-<tr><td><code>page</code></td><td>integer</td><td><code>1</code></td><td>Page number, starting at 1.</td></tr>
-<tr><td><code>limit</code></td><td>integer</td><td><code>20</code></td><td>Maximum number of items per page.</td></tr>
+<tr><td><code>type</code></td><td>string</td><td>None</td><td>Exactly <code>ip</code> or <code>training</code>.</td></tr>
+<tr><td><code>page</code></td><td>integer</td><td><code>1</code></td><td>Positive integer; minimum <code>1</code>.</td></tr>
+<tr><td><code>limit</code></td><td>integer</td><td><code>20</code></td><td>Integer from <code>1</code> to <code>100</code>. Values above 100 are rejected.</td></tr>
 </table></div>
 <p><b>Example request</b></p>
 <pre><code>GET /api/v1/items?type=training&amp;page=1&amp;limit=20
@@ -419,7 +427,7 @@ Authorization: Bearer &lt;token&gt;</code></pre>
 <p><b>Errors:</b> <code>400 invalid_parameters</code> for an invalid query value.</p>
 <h2>Retrieve an item</h2>
 <p><span class="l GET">GET</span> <code>/api/v1/items/:catalogId</code></p>
-<p>Returns the complete item for the <code>catalogId</code> in the path, for example <code>CAT-0042</code>.</p>
+<p>Returns the complete item for the <code>catalogId</code> in the path. IDs must match <code>CAT-</code> followed by at least four digits (for example, <code>CAT-0042</code>). A malformed ID returns <code>400 invalid_catalog_id</code>; a well-formed ID with no matching record returns <code>404 not_found</code>.</p>
 <p><b>Example request</b></p>
 <pre><code>GET /api/v1/items/CAT-0042
 Authorization: Bearer &lt;token&gt;</code></pre>
@@ -438,7 +446,8 @@ Authorization: Bearer &lt;token&gt;</code></pre>
 <p><b>Errors:</b> <code>404 not_found</code> if no item has that ID.</p>
 <h2>Replace an item</h2>
 <p><span class="l PUT">PUT</span> <code>/api/v1/items/:catalogId</code></p>
-<p>Replaces the whole item. The body takes the same fields as <a href="#api" class="page-link" data-page="api" data-anchor="create">Create an item</a>. Any optional field you omit resets to its default, including <code>status</code>, which resets to <code>draft</code>. The server keeps the original <code>createdAt</code>, sets <code>updatedAt</code> to the time of replacement, and drops fields outside the schema.</p>
+<p>The path ID must match <code>CAT-</code> followed by at least four digits; malformed IDs return <code>400 invalid_catalog_id</code>. Replaces the whole item. The body takes the same fields as <a href="#api" class="page-link" data-page="api" data-anchor="create">Create an item</a>. The server keeps the original <code>createdAt</code>, sets <code>updatedAt</code> to the time of replacement, and drops fields outside the schema.</p>
+<div class="panel warn"><b>Important: omitted fields are reset, not preserved</b>PUT does not merge the body with the stored item. Every omitted optional field receives its default. For example, replacing an item whose status is <code>active</code> with a body that omits <code>status</code> changes it to <code>draft</code>. Include <code>status</code> and every other value you need to retain. <code>PATCH</code> partial updates are not supported by this API.</div>
 <p><b>Example request</b></p>
 <pre><code>PUT /api/v1/items/CAT-0042
 Authorization: Bearer &lt;token&gt;
@@ -467,7 +476,7 @@ Content-Type: application/json
 <p><b>Errors:</b> <code>400 invalid_parameters</code> for a missing or invalid field; <code>404 not_found</code> if no item has that ID.</p>
 <h2>Delete an item</h2>
 <p><span class="l DELETE">DELETE</span> <code>/api/v1/items/:catalogId</code></p>
-<p>Permanently deletes the item. The deletion cannot be undone through the API.</p>
+<p>The path ID must match <code>CAT-</code> followed by at least four digits; malformed IDs return <code>400 invalid_catalog_id</code>. Permanently deletes the item. The deletion cannot be undone through the API.</p>
 <p><b>Example request</b></p>
 <pre><code>DELETE /api/v1/items/CAT-0042
 Authorization: Bearer &lt;token&gt;</code></pre>
@@ -477,20 +486,48 @@ Authorization: Bearer &lt;token&gt;</code></pre>
   "catalogId": "CAT-0042"
 }</code></pre>
 <p><b>Errors:</b> <code>404 not_found</code> if no item has that ID.</p>
+<h2>Response shapes</h2>
+<p>Successful create, retrieve, and replace requests return one item object with <code>catalogId</code>, <code>title</code>, <code>type</code>, <code>owner</code>, <code>description</code>, <code>tags</code>, <code>status</code>, <code>createdAt</code>, and <code>updatedAt</code>. List requests return <code>{ results, page, limit, total }</code>, where each entry in <code>results</code> has that same item shape. Delete requests return <code>{ deleted: true, catalogId }</code>. Dates are ISO 8601 strings. All errors use the same <code>{ error, message }</code> shape.</p>
 <h2 id="errors">Error reference</h2>
-<p>Errors return a JSON object with an <code>error</code> identifier and a readable <code>message</code>:</p>
+<p>A malformed path ID returns <code>400 invalid_catalog_id</code>; a syntactically valid ID with no record returns <code>404 not_found</code>. Errors return a JSON object with an <code>error</code> identifier and a readable <code>message</code>:</p>
 <pre><code>{
   "error": "not_found",
   "message": "No catalog item found for CAT-0042"
 }</code></pre>
 <div class="tbl"><table>
 <tr><th>Status</th><th><code>error</code></th><th>Cause</th><th>Resolution</th></tr>
-<tr><td>400</td><td><code>invalid_parameters</code></td><td>A required field is missing, a value has the wrong type, or <code>type</code> or <code>status</code> is not an allowed value.</td><td>Check the request fields and allowed values. Pagination values must be positive integers.</td></tr>
+<tr><td>400</td><td><code>invalid_parameters</code> or <code>invalid_catalog_id</code></td><td>A body or query value fails validation, or a path ID is malformed.</td><td>Check required fields, types, length limits, allowed values, and pagination bounds.</td></tr>
 <tr><td>401</td><td><code>unauthorized</code></td><td>The bearer token is missing or does not match <code>API_TOKEN</code>.</td><td>Send the correct <code>Authorization</code> header.</td></tr>
-<tr><td>404</td><td><code>not_found</code></td><td>No item has the <code>catalogId</code> in the request.</td><td>Use an ID returned by a create or list request.</td></tr>
-<tr><td>409</td><td><code>duplicate_catalog_id</code></td><td>POST only. The generated ID already exists, so the unique index rejected the insert.</td><td>Compare the counter's <code>seq</code> with the highest existing ID and correct the counter. Do not delete an unrelated item to clear the conflict.</td></tr>
-<tr><td>500</td><td><code>internal_error</code></td><td>An unexpected application or database error.</td><td>Check the server logs and the database connection.</td></tr>
+<tr><td>404</td><td><code>not_found</code></td><td>A well-formed ID does not identify an existing item.</td><td>Use an ID returned by a create or list request.</td></tr>
+<tr><td>409</td><td><code>duplicate_catalog_id</code></td><td>POST only. The unique index rejected a generated ID that already exists.</td><td>Compare the counter's <code>seq</code> with the highest existing ID and correct the counter. Do not delete an unrelated item to clear the conflict.</td></tr>
+<tr><td>500</td><td><code>internal_error</code></td><td>An unexpected application or database error.</td><td>Check the server logs and database connection; the response does not expose internal details.</td></tr>
 </table></div>
+<h3>Example error responses</h3>
+<p><b>400 — Invalid request</b></p>
+<pre><code>{
+  "error": "invalid_parameters",
+  "message": "status must be draft, active, or archived"
+}</code></pre>
+<p><b>401 — Missing or invalid authentication</b></p>
+<pre><code>{
+  "error": "unauthorized",
+  "message": "A valid bearer token is required"
+}</code></pre>
+<p><b>404 — Record not found</b></p>
+<pre><code>{
+  "error": "not_found",
+  "message": "No catalog item found for CAT-0099"
+}</code></pre>
+<p><b>409 — Duplicate identifier</b></p>
+<pre><code>{
+  "error": "duplicate_catalog_id",
+  "message": "Catalog ID CAT-0042 already exists"
+}</code></pre>
+<p><b>500 — Unexpected server error</b></p>
+<pre><code>{
+  "error": "internal_error",
+  "message": "An unexpected error occurred"
+}</code></pre>
 </section>
 
 <section id="log" hidden>
@@ -506,7 +543,8 @@ Authorization: Bearer &lt;token&gt;</code></pre>
 <div class="crumb">Catalog API / Guides</div>
 <h1>Add a status field</h1>
 <div class="meta">Version 1.3.0</div>
-<p>This tutorial adds the <code>status</code> field to catalog items, as released in version 1.3.0. The change touches the field definition, the create and replace functions, request validation, the tests, and the API reference. The snippets show only the lines that change; the complete functions are in the <a href="#db" class="page-link" data-page="db">data layer guide</a>.</p>
+<p>This tutorial adds the <code>status</code> field to catalog items, as released in version 1.3.0. The change touches the field definition, create and replace logic, validation, tests, and the API reference. The snippets show only changed lines; complete functions are in the <a href="#db" class="page-link" data-page="db">data layer guide</a>.</p>
+<p><b>Rollout:</b> Backfill existing documents with <code>status: "draft"</code> before deploying (see the data layer migration). The field is additive, so clients that ignore unknown response properties can continue reading responses. Older clients that use PUT are a special case: because PUT replaces the record, a client that omits <code>status</code> will reset it to <code>draft</code>. Update those clients to send the current status when replacing a record. The field is returned by every item response; filtering by status is not supported.</p>
 <h2>1. Define the allowed values</h2>
 <p>Keep the allowed values and the default in one place.</p>
 <pre><code>const allowedStatuses = ['draft', 'active', 'archived'];
@@ -600,7 +638,8 @@ it('resets status to draft when a replacement omits it', async () =&gt; {
   expect(replaced.body.createdAt).toBe(created.body.createdAt);
 });</code></pre>
 <h2>6. Update the API reference</h2>
-<p>Document <code>status</code> as an optional field in the <a href="#api" class="page-link" data-page="api" data-anchor="create">POST and PUT request schemas</a>, including its allowed values and <code>draft</code> default. Include it in the example responses. List responses also include the field, but <code>GET /items</code> does not support a status filter.</p>
+<p>Document <code>status</code> as optional in the <a href="#api" class="page-link" data-page="api" data-anchor="create">POST and PUT request schemas</a>, including its allowed values and <code>draft</code> default. Include it in POST, GET, and PUT item responses. List responses include it on every result, but <code>GET /items</code> does not support a status filter.</p>
+<p><b>Client checklist:</b> Backfill existing records once; update PUT clients to send <code>status</code>; allow clients to read the additional response property. No token setup or authentication-header change is required.</p>
 </section>
 
 </main>
@@ -609,15 +648,24 @@ it('resets status to draft when a replacement omits it', async () =&gt; {
 const changelog = `## Version 1.3.0
 Release date: 2025-03-04
 
-### Added
-- \`status\` field on catalog items. Allowed values are \`draft\`, \`active\`, and \`archived\`; the default is \`draft\`.
-- Optional \`page\` and \`limit\` query parameters on \`GET /items\`.
+### Added and changed
+- Added optional \`status\` to item requests and responses. Values are \`draft\`, \`active\`, and \`archived\`; omitted values default to \`draft\`.
+- Added \`page\` and \`limit\` pagination to \`GET /items\` (defaults: 1 and 20; maximum limit: 100).
+- Standardized duplicate-ID failures as \`409 duplicate_catalog_id\`.
 
-### Changed
-- Duplicate catalog identifiers return \`409 Conflict\` with the \`duplicate_catalog_id\` error.
+### API impact
+- \`POST /items\` and \`PUT /items/:catalogId\` accept \`status\`; their returned item objects now include it.
+- \`GET /items/:catalogId\` and each item in \`GET /items\` now include \`status\`. The list response includes \`results\`, \`page\`, \`limit\`, and \`total\`.
+- \`GET /items\` does not add a status filter. The delete response is unchanged.
+
+### Compatibility and migration
+- The change is backward-compatible at the request/response schema level: \`status\` is optional on writes and additive on reads. Existing clients that ignore unknown response fields can continue to read items.
+- Existing documents need a one-time backfill of missing \`status\` values to \`draft\`; no other record migration is required.
+- Important: older clients that send PUT without \`status\` will reset that item to \`draft\`. Update PUT clients to send the current value. No PATCH endpoint is provided.
+- No authentication change: configure \`API_TOKEN\` at server startup. No token-creation endpoint or client token migration is required.
 
 ### Breaking changes
-- None.
+- None to the documented endpoint paths or required request fields. The PUT replacement behavior is unchanged; clients must account for the new defaulted field as noted above.
 
 ## Version 1.2.0
 Release date: 2025-02-11
@@ -632,7 +680,7 @@ Release date: 2025-02-11
 Release date: 2025-01-20
 
 ### Changed
-- Catalog IDs come from an atomic counter instead of a document count, so deleting an item no longer causes an ID to be reused.`;
+- Catalog IDs use an atomic counter instead of a document count, preventing duplicate IDs under concurrent creation and reuse after deletion.`;
 
 function escapeHTML(value) {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
